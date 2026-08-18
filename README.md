@@ -18,8 +18,12 @@ Current methodologies in Structural Health Monitoring (SHM) exhibit significant 
 *   **Deep Neural Networks (DNNs):** While effective, DNNs operate as "black boxes" and require tens of thousands of training parameters, rendering them unsuitable for computationally bounded Digital Twin environments where data is scarce.
 
 ## 4. Method and Methodologies
-This study constructs a computationally bounded Digital Twin using finite element modeling (COMSOL Multiphysics) to simulate a 400 mm planar butt joint comprising Aluminum 2024-T3 and Titanium Grade 5. 
-*   **Excitation:** Active interrogation is achieved via a 7 mm Piezoelectric Wafer Active Sensor (PWAS), injecting a 200 kHz, 5-cycle Hanning-windowed tone burst to isolate the fundamental symmetric ($S_0$) mode.
+This study constructs a computationally bounded Digital Twin using finite element modeling (COMSOL Multiphysics) to simulate a dissimilar planar butt joint comprising Aluminum 2024-T3 and Titanium Grade 5. 
+
+![Finite Element Mesh Configuration](image_4.jpg)
+*Figure 1: 3D Finite Element Mesh of the structural waveguide. Notice the localized tetrahedral mesh refinement explicitly applied at the Piezoelectric Wafer Active Sensor (PWAS) boundaries to accurately capture the high-frequency electromechanical coupling without exhausting global memory constraints.*
+
+*   **Excitation:** Active interrogation is achieved via a Piezoelectric Wafer Active Sensor (PWAS), injecting a 200 kHz, 5-cycle Hanning-windowed tone burst to isolate the fundamental symmetric ($S_0$) mode.
 *   **Environmental Constraints:** The system is constrained to a nominal ambient temperature of 293.15 K to eliminate thermal-induced velocity shifts.
 *   **Algorithmic Feature Extraction:** A multi-node sensor array captures the temporal floating potential. To counter wave dispersion, a Hilbert Transform is utilized to extract the analytic signal envelope, ensuring mathematically robust Time-of-Flight (ToF) calculations alongside energy and kurtosis metrics.
 
@@ -43,9 +47,27 @@ We propose a two-stage, physics-informed machine learning pipeline engineered fo
 
 ## 7. Results and Outcome
 The proposed methodology successfully digitized the acoustic physics of the dissimilar aerospace joint, yielding a highly deterministic dataset of 601 time steps across 33 distinct spatial damage configurations.
-*   **Detection Reliability:** The dynamic monitoring pipeline successfully differentiated between harmless titanium boundary reflections and critical structural cracks, maintaining a stable probability baseline before accurately triggering the damage threshold.
-*   **Spatial Localization:** By fusing the sensor nodes and constraining the stochastic optimizer, the model completely eliminated mean collapse. The High-Dimensional GPR successfully tracked the linear progression of the crack coordinates, achieving a Mean Absolute Error (MAE) of 25.09 mm. 
-*   **Robustness:** The model demonstrated profound mathematical resilience, accurately mapping the spatial domain utilizing a highly constrained training set, proving its viability for computationally limited Digital Twin ecosystems.
+
+![Lamb Wave Propagation](image_5.jpg)
+*Figure 2: Time-dependent simulation of the $S_0$ Lamb wave propagation captured at $t = 200 \text{ \mu s}$. The von Mises stress distribution visualizes the physical acoustic scattering across the planar joint prior to algorithmic feature extraction.*
+
+**A. Feature Space Dimensionality**
+By extracting physics-informed parameters across the four-node sensor array, the raw time-series data was mathematically compressed into a 24-dimensional feature matrix.
+
+![PCA Feature Space](image_08db96.png)
+*Figure 3: Principal Component Analysis (PCA) projection of the 24-dimensional fused feature space, demonstrating distinct clustering of the structural damage signatures.*
+
+**B. Detection Reliability**
+The dynamic monitoring pipeline successfully differentiated between harmless titanium boundary reflections and critical structural cracks.
+
+![Dynamic Health Monitoring](image_08db5c.png)
+*Figure 4: The 4-Node Dynamic Health Monitoring simulation. The Support Vector Machine (SVM) maintains a stable probability baseline (~15%) during the healthy phase and instantly triggers a decisive structural alarm upon crack initiation at Measurement Sequence 10.*
+
+**C. Spatial Triangulation and Localization**
+By fusing the sensor nodes and constraining the stochastic optimizer, the model completely eliminated mean collapse.
+
+![Multi-Sensor Localization](image_08db7a.png)
+*Figure 5: High-Dimensional Gaussian Process Regression successfully triangulating the crack location. The model mathematically tracks the spatial progression with a highly reproducible, fixed-seed Mean Absolute Error (MAE) of 25.09 mm, visualizing the stochastic confidence intervals across the complex waveguide.*
 
 ## 8. Conclusion
 This research successfully bridges finite element wave physics with advanced stochastic modeling to monitor complex aerospace planar joints. By replacing brute-force data generation with high-dimensional sensor fusion and Hilbert-transformed feature extraction, the proposed pipeline accurately localizes structural anomalies under stringent data constraints. The mathematically optimized GPR framework proves that intelligent algorithm design can overcome acoustic impedance scattering in dissimilar metals. Future investigations will focus on incorporating coupled thermo-mechanical interfaces and exploring Operations Research (OR) methodologies to mathematically optimize the geometric placement of the sensor array.
